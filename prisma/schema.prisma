@@ -61,6 +61,8 @@ model User {
   Event                   Event[]
   Resource                Resource[]
 
+  chatSessions ChatSession[]
+
   @@map("users")
 }
 
@@ -167,6 +169,44 @@ model RecommendationCard {
   updatedAt   DateTime @updatedAt
 
   @@map("recommendation_cards")
+}
+
+model ChatSession {
+  id        String   @id @default(cuid())
+  userId    String
+  topic     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages Message[]
+
+  @@map("chat_sessions")
+}
+
+model Message {
+  id         String   @id @default(cuid())
+  sessionId  String
+  content    String
+  isFromUser Boolean
+  createdAt  DateTime @default(now())
+
+  // Relations
+  session ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+}
+
+model SystemPrompt {
+  id        String   @id @default(cuid())
+  name      String
+  content   String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("system_prompts")
 }
 
 enum UserRole {
