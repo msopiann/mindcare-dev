@@ -58,6 +58,8 @@ model User {
   sessions                Session[]
   emailVerificationTokens EmailVerificationToken[]
   passwordResetTokens     PasswordResetToken[]
+  Event                   Event[]
+  Resource                Resource[]
 
   @@map("users")
 }
@@ -86,7 +88,103 @@ model PasswordResetToken {
   @@map("password_reset_tokens")
 }
 
+model Event {
+  id                 String      @id @default(cuid())
+  title              String
+  description        String?     @db.Text
+  startDate          DateTime
+  endDate            DateTime? // null for single-day events
+  location           String
+  price              Float? // null for free events
+  image              String?
+  link               String // external source link
+  highlighted        Boolean     @default(false)
+  ticketAvailability Boolean     @default(true)
+  status             EventStatus @default(UPCOMING)
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+  createdById        String
+  createdBy          User        @relation(fields: [createdById], references: [id])
+
+  @@map("events")
+}
+
+model Resource {
+  id          String       @id @default(cuid())
+  title       String
+  description String?      @db.Text
+  type        ResourceType
+  publisher   String
+  image       String?
+  link        String
+  highlighted Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  createdById String
+  createdBy   User         @relation(fields: [createdById], references: [id])
+
+  @@map("resources")
+}
+
+model EventBanner {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  image       String
+  link        String?
+  active      Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("event_banners")
+}
+
+model ResourceBanner {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  image       String
+  link        String?
+  active      Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("resource_banners")
+}
+
+model RecommendationCard {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  image       String
+  link        String
+  category    String
+  active      Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("recommendation_cards")
+}
+
 enum UserRole {
   USER
   ADMIN
+}
+
+enum EventStatus {
+  UPCOMING
+  ONGOING
+  COMPLETED
+  CANCELLED
+}
+
+enum ResourceType {
+  ARTICLE
+  VIDEO
+  PODCAST
+  GUIDE
+  TOOL
 }

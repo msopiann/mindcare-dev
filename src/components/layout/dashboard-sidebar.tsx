@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/sidebar";
 import {
   Cloud,
+  Command,
   Drum,
   File,
   MessageCircle,
@@ -75,6 +76,11 @@ const adminNavigationItems = [
     title: "Events",
     url: "/dashboard/events",
     icon: Drum,
+  },
+  {
+    title: "Content",
+    url: "/dashboard/content",
+    icon: Command,
   },
   {
     title: "Users",

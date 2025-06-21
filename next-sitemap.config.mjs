@@ -10,11 +10,11 @@ const config = {
   priority: 0.7,
   sitemapSize: 5000,
   generateRobotsTxt: true,
-  exclude: ["/admin/*", "/auth/*", "/api/*", "/dashboard", "/404", "/500"],
+  exclude: ["/auth/*", "/api/*", "/dashboard", "/404", "/500"],
   robotsTxtOptions: {
     policies: [
       { userAgent: "*", allow: "/" },
-      { userAgent: "*", disallow: ["/admin", "/auth", "/api"] },
+      { userAgent: "*", disallow: ["/auth", "/api"] },
     ],
   },
   additionalSitemaps: [`${siteUrl}/server-sitemap.xml`],
