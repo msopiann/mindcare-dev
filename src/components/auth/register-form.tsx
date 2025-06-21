@@ -6,8 +6,9 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, CheckCircle, Mail, Clock, Shield } from "lucide-react";
 import Link from "next/link";
+
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +20,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { registerSchema, type RegisterInput } from "@/lib/validations/auth";
 import { useRegister } from "@/hooks/use-auth-api";
 
@@ -29,6 +31,8 @@ export function RegisterForm({
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState("");
 
   const registerMutation = useRegister();
 
@@ -41,7 +45,12 @@ export function RegisterForm({
   });
 
   const onSubmit = async (data: RegisterInput) => {
-    registerMutation.mutate(data);
+    registerMutation.mutate(data, {
+      onSuccess: () => {
+        setRegistrationSuccess(true);
+        setRegisteredEmail(data.email);
+      },
+    });
   };
 
   const handleGoogleSignIn = async () => {
@@ -54,6 +63,138 @@ export function RegisterForm({
       setIsGoogleLoading(false);
     }
   };
+
+  if (registrationSuccess) {
+    return (
+      <div className={cn("flex flex-col gap-6", className)} {...props}>
+        <Card className="py-8">
+          <CardHeader className="text-center">
+            <CheckCircle className="mx-auto h-12 w-12 text-green-500" />
+            <CardTitle className="mt-4 text-xl">Welcome to Mindcare!</CardTitle>
+            <CardDescription>
+              Your account has been created successfully. We&apos;ve sent a
+              verification email to:
+            </CardDescription>
+            <div className="bg-muted mt-2 rounded-md p-2">
+              <p className="text-sm font-medium">{registeredEmail}</p>
+            </div>
+          </CardHeader>
+          <CardContent className="mt-6 space-y-6">
+            {/* Next Steps */}
+            <div className="space-y-4">
+              <h3 className="text-center font-medium">Next Steps:</h3>
+              <div className="space-y-3">
+                <div className="flex items-start space-x-3">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-xs font-medium text-blue-600">
+                    1
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">Check your email</p>
+                    <p className="text-muted-foreground text-xs">
+                      Look for an email from Mindcare in your inbox
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-xs font-medium text-blue-600">
+                    2
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">
+                      Click the verification link
+                    </p>
+                    <p className="text-muted-foreground text-xs">
+                      This will activate your account
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-xs font-medium text-blue-600">
+                    3
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">
+                      Sign in to your account
+                    </p>
+                    <p className="text-muted-foreground text-xs">
+                      Start your mental health journey
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Important Info */}
+            <Alert>
+              <Clock className="h-4 w-4" />
+              <AlertDescription>
+                <div className="space-y-2">
+                  <p className="font-medium">Important:</p>
+                  <ul className="ml-4 list-disc space-y-1 text-sm">
+                    <li>
+                      Check your spam/junk folder if you don&apos;t see the
+                      email
+                    </li>
+                    <li>The verification link expires in 24 hours</li>
+                    <li>You must verify your email before you can sign in</li>
+                  </ul>
+                </div>
+              </AlertDescription>
+            </Alert>
+
+            {/* Action Buttons */}
+            <div className="space-y-3">
+              <Button asChild className="w-full">
+                <Link href="/auth/sign-in">
+                  <Shield className="mr-2 h-4 w-4" />
+                  Go to Sign In
+                </Link>
+              </Button>
+
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background text-muted-foreground px-2">
+                    Didn&apos;t receive email?
+                  </span>
+                </div>
+              </div>
+
+              <Button asChild variant="outline" className="w-full">
+                <Link
+                  href={`/auth/resend-verification?email=${encodeURIComponent(registeredEmail)}&from=registration`}
+                >
+                  <Mail className="mr-2 h-4 w-4" />
+                  Resend Verification Email
+                </Link>
+              </Button>
+            </div>
+
+            {/* Help Section */}
+            <div className="space-y-2 text-center">
+              <p className="text-muted-foreground text-sm">Need help?</p>
+              <div className="flex justify-center space-x-4 text-xs">
+                <Link
+                  href="/help/email-verification"
+                  className="hover:text-foreground underline underline-offset-4"
+                >
+                  Email Issues
+                </Link>
+                <Link
+                  href="/contact"
+                  className="hover:text-foreground underline underline-offset-4"
+                >
+                  Contact Support
+                </Link>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

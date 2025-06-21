@@ -31,7 +31,7 @@ export function Providers({ children }: ProvidersProps) {
     <QueryClientProvider client={queryClient}>
       <SessionProvider>
         {children}
-        <Toaster position="top-right" richColors closeButton />
+        <Toaster position="bottom-right" richColors />
       </SessionProvider>
     </QueryClientProvider>
   );

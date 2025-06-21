@@ -1,8 +1,10 @@
 "use client";
 
+import type React from "react";
+
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Mail, CheckCircle, XCircle } from "lucide-react";
+import { Mail, CheckCircle, XCircle, RefreshCw } from "lucide-react";
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
@@ -14,6 +16,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useVerifyEmail, useResendVerification } from "@/hooks/use-auth-api";
 
 interface VerifyEmailPageProps {
@@ -23,11 +27,13 @@ interface VerifyEmailPageProps {
 export default function VerifyEmailPage({ className }: VerifyEmailPageProps) {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
-  const email = searchParams.get("email");
+  const emailParam = searchParams.get("email");
 
   const [verificationStatus, setVerificationStatus] = useState<
     "pending" | "success" | "error"
   >("pending");
+  const [email, setEmail] = useState(emailParam || "");
+  const [showResendForm, setShowResendForm] = useState(false);
 
   const verifyEmailMutation = useVerifyEmail();
   const resendVerificationMutation = useResendVerification();
@@ -38,13 +44,21 @@ export default function VerifyEmailPage({ className }: VerifyEmailPageProps) {
         { token },
         {
           onSuccess: () => setVerificationStatus("success"),
-          onError: () => setVerificationStatus("error"),
+          onError: () => {
+            setVerificationStatus("error");
+            setShowResendForm(true);
+          },
         },
       );
+    } else {
+      // No token provided, show resend form
+      setVerificationStatus("error");
+      setShowResendForm(true);
     }
   }, [token]);
 
-  const handleResendVerification = () => {
+  const handleResendVerification = (e: React.FormEvent) => {
+    e.preventDefault();
     if (email) {
       resendVerificationMutation.mutate({ email });
     }
@@ -77,7 +91,7 @@ export default function VerifyEmailPage({ className }: VerifyEmailPageProps) {
     );
   }
 
-  if (verificationStatus === "error") {
+  if (verificationStatus === "error" || showResendForm) {
     return (
       <div
         className={cn(
@@ -88,26 +102,44 @@ export default function VerifyEmailPage({ className }: VerifyEmailPageProps) {
         <Card className="w-full max-w-md py-6">
           <CardHeader className="text-center">
             <XCircle className="mx-auto h-12 w-12 text-red-500" />
-            <CardTitle className="mt-4 text-xl">Verification Failed</CardTitle>
+            <CardTitle className="mt-4 text-xl">
+              {token ? "Verification Failed" : "Email Verification Required"}
+            </CardTitle>
             <CardDescription>
-              The verification link is invalid or has expired. Please request a
-              new verification email.
+              {token
+                ? "The verification link is invalid or has expired. Please request a new verification email."
+                : "Please enter your email address to receive a new verification link."}
             </CardDescription>
           </CardHeader>
-          <CardContent className="mt-6 grid gap-4">
-            {email && (
+          <CardContent className="mt-6">
+            <form onSubmit={handleResendVerification} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email Address</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
               <Button
-                variant="outline"
+                type="submit"
                 className="w-full"
-                onClick={handleResendVerification}
-                disabled={resendVerificationMutation.isPending}
+                disabled={resendVerificationMutation.isPending || !email}
               >
-                {resendVerificationMutation.isPending
-                  ? "Sending..."
-                  : "Resend verification email"}
+                {resendVerificationMutation.isPending ? (
+                  <>
+                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  "Send Verification Email"
+                )}
               </Button>
-            )}
-            <div className="text-muted-foreground text-center text-sm">
+            </form>
+            <div className="text-muted-foreground mt-4 text-center text-sm">
               <Link
                 href="/auth/sign-in"
                 className="underline underline-offset-4"

@@ -5,6 +5,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const titleMap: Record<string, string> = {
+  chat: "Chat",
+  "popular-keyword": "Popular Keyword",
+  "system-prompt": "System Prompt",
+  resources: "Resources",
+  events: "Events",
+  users: "Users",
+
+  create: "Create",
+  edit: "Edit",
+
   setting: "Settings",
 };
 
