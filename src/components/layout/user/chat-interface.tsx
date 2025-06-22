@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
 import { useChatSessions, useChatMessages } from "@/hooks/use-chat-api";
@@ -28,21 +28,23 @@ export interface Message {
 export function ChatInterface() {
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
 
-  const { data: sessions = [], isLoading: sessionsLoading } = useChatSessions();
+  const { data: sessionsData, isLoading: sessionsLoading } = useChatSessions();
+  const sessions = useMemo(() => sessionsData?.sessions || [], [sessionsData]);
+
   const { data: messages = [], isLoading: messagesLoading } =
     useChatMessages(selectedChatId);
 
-  // Auto-select first session
-  useState(() => {
+  // Auto-select first session once loaded
+  useEffect(() => {
     if (!sessionsLoading && sessions.length > 0 && !selectedChatId) {
       setSelectedChatId(sessions[0].id);
     }
-  });
+  }, [sessionsLoading, sessions, selectedChatId]);
 
   const chats: Chat[] = sessions.map((session) => ({
     id: session.id,
-    topic: session.topic,
-    lastMessage: session.lastMessage,
+    topic: session.title,
+    lastMessage: session.lastMessage || "",
     messageCount: session.messageCount,
     createdAt: session.createdAt,
     updatedAt: session.updatedAt,

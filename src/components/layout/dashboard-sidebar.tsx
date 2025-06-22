@@ -82,11 +82,6 @@ const adminNavigationItems = [
     url: "/dashboard/content",
     icon: Command,
   },
-  {
-    title: "Users",
-    url: "/dashboard/users",
-    icon: Users,
-  },
 ];
 
 export function DashboardSidebar({

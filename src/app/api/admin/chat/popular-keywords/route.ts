@@ -178,6 +178,10 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    if (session.user.role !== "ADMIN") {
+      throw new Error("Forbidden");
+    }
+
     const { searchParams } = new URL(request.url);
     const days = Number.parseInt(searchParams.get("days") || "30");
     const limit = Number.parseInt(searchParams.get("limit") || "50");

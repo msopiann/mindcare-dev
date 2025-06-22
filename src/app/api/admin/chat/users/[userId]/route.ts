@@ -15,8 +15,9 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Check if current user is admin (you might want to add role-based auth)
-    // For now, assuming any authenticated user can access this
+    if (session.user.role !== "ADMIN") {
+      throw new Error("Forbidden");
+    }
 
     const user = await prisma.user.findUnique({
       where: { id: params.userId },

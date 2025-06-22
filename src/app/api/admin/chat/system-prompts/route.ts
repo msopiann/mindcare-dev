@@ -19,6 +19,10 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    if (session.user.role !== "ADMIN") {
+      throw new Error("Forbidden");
+    }
+
     const prompts = await prisma.systemPrompt.findMany({
       orderBy: { createdAt: "desc" },
     });
