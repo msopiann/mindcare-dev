@@ -13,7 +13,11 @@ const bricolageGrotesqueFont = Bricolage_Grotesque({
   preload: true,
 });
 
+const baseUrl = process.env.APP_URL!;
+
 export const metadata: Metadata = {
+  metadataBase: new URL(baseUrl),
+
   title: {
     template: "%s | Mindcare - Ruang Nyaman Buat Jaga Kesehatan Mental Kamu",
     default: "Mindcare | Ruang Nyaman Buat Jaga Kesehatan Mental Kamu",
@@ -32,6 +36,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+    images: "/opengraph-image.png",
     title: "Mindcare | Ruang Nyaman Buat Jaga Kesehatan Mental Kamu",
     description:
       "Lagi burnout? Overthinking? Atau cuma pengen cerita? Mindcare hadir buat bantu kamu tetap waras lewat konseling online & tips self-care yang relatable.",

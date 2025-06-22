@@ -7,7 +7,7 @@ import TailwindIndicator from "@/components/tailwind-indicator";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL!;
+const baseUrl = process.env.APP_URL!;
 
 const breadcrumbData = {
   "@context": "https://schema.org",

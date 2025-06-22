@@ -1,12 +1,20 @@
 "use client";
 
-import { ChatInterface } from "@/components/layout/user/chat-interface";
 import React from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { redirect } from "next/navigation";
 
+function AdminDashboard() {
+  return (
+    <div>
+      <h1>Admin Dashboard</h1>
+      {/* Add admin dashboard content here */}
+    </div>
+  );
+}
+
 export default function DashboardPage() {
-  const { isLoading, isAuthenticated } = useAuth();
+  const { isLoading, isAuthenticated, isAdmin } = useAuth();
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -16,5 +24,9 @@ export default function DashboardPage() {
     redirect("/auth/sign-in");
   }
 
-  return <ChatInterface />;
+  if (!isAdmin) {
+    redirect("/chat");
+  }
+
+  return <AdminDashboard />;
 }

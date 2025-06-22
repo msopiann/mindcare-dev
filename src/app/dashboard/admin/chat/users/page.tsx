@@ -2,7 +2,6 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useAdminChatUsers } from "@/hooks/use-admin-chat-api";
-import { formatDistanceToNow } from "date-fns";
 
 export default function AdminDashboardChatUserStats() {
   const { data: userStats = [], isLoading, refetch } = useAdminChatUsers();
@@ -51,7 +50,7 @@ export default function AdminDashboardChatUserStats() {
                 <td className="px-4 py-2 text-right">{user.totalMessages}</td>
                 <td className="px-4 py-2 text-center">
                   <Link
-                    href={`/dashboard/chat/users/${user.id}`}
+                    href={`/dashboard/admin/chat/users/${user.id}`}
                     className="text-blue-500 underline hover:text-blue-700"
                   >
                     View Details

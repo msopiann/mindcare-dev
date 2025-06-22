@@ -1,61 +1,31 @@
 import { withAuth } from "next-auth/middleware";
+import { NextResponse } from "next/server";
 
 export default withAuth(
-  function middleware(req) {
-    // Add any additional middleware logic here
+  async function middleware(req) {
+    const { pathname } = req.nextUrl;
+    const role = req.nextauth.token?.role;
+
+    if (pathname.startsWith("/api/admin") && role !== "ADMIN") {
+      return new NextResponse(JSON.stringify({ error: "Forbidden" }), {
+        status: 403,
+        headers: { "content-type": "application/json" },
+      });
+    }
   },
   {
     callbacks: {
-      authorized: ({ token, req }) => {
-        // Check if user is authenticated for protected routes
-        const { pathname } = req.nextUrl;
-
-        // Public routes that don't require authentication
-        const publicRoutes = [
-          "/",
-          "/auth/sign-in",
-          "/auth/sign-up",
-          "/auth/forgot-password",
-          "/auth/reset-password",
-          "/auth/verify-email",
-        ];
-
-        // API routes that don't require authentication
-        const publicApiRoutes = [
-          "/api/auth",
-          "/api/auth/register",
-          "/api/auth/verify-email",
-          "/api/auth/forgot-password",
-          "/api/auth/reset-password",
-          "/api/auth/resend-verification",
-        ];
-
-        // Allow public routes
-        if (publicRoutes.some((route) => pathname.startsWith(route))) {
-          return true;
-        }
-
-        // Allow public API routes
-        if (publicApiRoutes.some((route) => pathname.startsWith(route))) {
-          return true;
-        }
-
-        // Require authentication for all other routes
-        return !!token;
-      },
+      authorized: ({ token }) => !!token, // pastikan user authenticated
     },
   },
 );
 
+// hanya jalankan middleware pada path ini
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     */
     "/((?!_next/static|_next/image|favicon.ico|public/).*)",
+    "/api/admin/:path*",
+    "/api/admin/:path*",
+    "/dashboard/admin/:path*",
   ],
 };

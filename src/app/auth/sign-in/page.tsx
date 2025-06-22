@@ -1,7 +1,7 @@
+import { Suspense } from "react";
 import { LoginForm } from "@/components/auth/login-form";
 import Link from "next/link";
 import Image from "next/image";
-import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function SignInPage() {
   return (
@@ -22,10 +22,9 @@ export default function SignInPage() {
           </div>
           Mindcare
         </Link>
-        <LoginForm />
-        <div className="fixed right-5 bottom-5">
-          <ThemeToggle />
-        </div>
+        <Suspense fallback={<div>Loading…</div>}>
+          <LoginForm />
+        </Suspense>
       </div>
     </div>
   );

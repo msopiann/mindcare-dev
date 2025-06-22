@@ -11,7 +11,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { WellbeingPathSection } from "@/components/sections/wellbeing-path-section";
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL!;
+const baseUrl = process.env.APP_URL!;
 
 export const metadata = {
   title: "Mindcare | Ruang Nyaman Buat Jaga Kesehatan Mental Kamu",

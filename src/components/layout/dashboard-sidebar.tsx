@@ -42,44 +42,44 @@ const userNavigationItems = [
 const adminNavigationItems = [
   {
     title: "Dashboard",
-    url: "/dashboard",
+    url: "/dashboard/admin",
     icon: Notebook,
   },
   {
     title: "Chatbot Setting",
-    url: "/dashboard/chat",
+    url: "/dashboard/admin/chat",
     icon: MessageCircle,
     items: [
       {
         title: "System Prompt",
-        url: "/dashboard/chat/system-prompt",
+        url: "/dashboard/admin/chat/system-prompt",
         icon: Settings,
       },
       {
         title: "Users Chat",
-        url: "/dashboard/chat/users",
+        url: "/dashboard/admin/chat/users",
         icon: Users,
       },
       {
         title: "Popular Keyword",
-        url: "/dashboard/chat/popular-keyword",
+        url: "/dashboard/admin/chat/popular-keyword",
         icon: Cloud,
       },
     ],
   },
   {
     title: "Resources",
-    url: "/dashboard/resources",
+    url: "/dashboard/admin/resources",
     icon: File,
   },
   {
     title: "Events",
-    url: "/dashboard/events",
+    url: "/dashboard/admin/events",
     icon: Drum,
   },
   {
     title: "Content",
-    url: "/dashboard/content",
+    url: "/dashboard/admin/content",
     icon: Command,
   },
 ];

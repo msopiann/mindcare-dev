@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { RegisterForm } from "@/components/auth/register-form";
+import { Suspense } from "react";
 
 export default function SignUpPage() {
   return (
@@ -22,10 +22,9 @@ export default function SignUpPage() {
           </div>
           Mindcare
         </Link>
-        <RegisterForm />
-        <div className="fixed right-5 bottom-5">
-          <ThemeToggle />
-        </div>
+        <Suspense fallback={<div>Loading…</div>}>
+          <RegisterForm />
+        </Suspense>
       </div>
     </div>
   );

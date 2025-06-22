@@ -6,7 +6,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import TailwindIndicator from "@/components/tailwind-indicator";
 import { ResourcesSection } from "@/components/resources/resources-section";
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL!;
+const baseUrl = process.env.APP_URL!;
 
 const breadcrumbData = {
   "@context": "https://schema.org",
