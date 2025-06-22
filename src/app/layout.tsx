@@ -57,19 +57,6 @@ export default function RootLayout({
   return (
     <html lang="id" className="scroll-smooth" suppressHydrationWarning>
       <head>
-        {/* Preload critical resources */}
-        <link
-          rel="preload"
-          href="/assets/image/hero/hero-right-decoration.png"
-          as="image"
-          type="image/png"
-        />
-        <link
-          rel="preload"
-          href="/assets/image/hero/hero-left-decoration.png"
-          as="image"
-          type="image/png"
-        />
         {/* DNS prefetch for external resources */}
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
       </head>

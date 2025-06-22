@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -41,55 +40,57 @@ export default function AdminChatUsersDetailPage() {
   }
 
   return (
-    <div className="flex h-full gap-4 p-6">
+    <div className="flex h-[calc(100vh-8rem)] gap-4">
       {/* Sidebar: Chat Sessions */}
       <Card className="flex w-80 flex-col">
-        <div className="flex items-center justify-between border-b p-4">
-          <Link
-            href="/admin/dashboard/chat/users"
-            className="text-sm text-blue-500 underline"
-          >
-            ← Back to Users
-          </Link>
-          <h3 className="text-lg font-semibold">Sessions</h3>
+        <div className="flex h-full flex-col">
+          <div className="border-b p-4">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-lg font-semibold">Sessions</h2>
+            </div>
+          </div>
+          <ScrollArea className="flex-1">
+            <div className="p-2">
+              {sessions.map((session, idx) => (
+                <React.Fragment key={session.id}>
+                  <div
+                    onClick={() => setSelectedSessionId(session.id)}
+                    className={`cursor-pointer rounded-lg p-3 transition-colors ${
+                      selectedSessionId === session.id
+                        ? "bg-muted"
+                        : "hover:bg-muted/50"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">
+                        {session.topic}
+                      </span>
+                      <span className="text-muted-foreground text-xs">
+                        {new Date(session.startedAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <p className="text-muted-foreground mt-1 line-clamp-1 text-sm">
+                      {session.lastMessage}
+                    </p>
+                    <p className="mt-1 text-xs text-gray-400">
+                      {session.messageCount} messages
+                    </p>
+                  </div>
+                  {idx < sessions.length - 1 && <Separator className="my-1" />}
+                </React.Fragment>
+              ))}
+              {sessions.length === 0 && (
+                <p className="p-4 text-center text-sm text-gray-500">
+                  No sessions found for this user.
+                </p>
+              )}
+            </div>
+          </ScrollArea>
         </div>
-        <ScrollArea className="flex-1 p-2">
-          {sessions.map((session, idx) => (
-            <React.Fragment key={session.id}>
-              <div
-                onClick={() => setSelectedSessionId(session.id)}
-                className={`cursor-pointer rounded-lg p-3 transition-colors ${
-                  selectedSessionId === session.id
-                    ? "bg-muted"
-                    : "hover:bg-muted/50"
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">{session.topic}</span>
-                  <span className="text-muted-foreground text-xs">
-                    {new Date(session.startedAt).toLocaleDateString()}
-                  </span>
-                </div>
-                <p className="text-muted-foreground mt-1 truncate text-sm">
-                  {session.lastMessage}
-                </p>
-                <p className="mt-1 text-xs text-gray-400">
-                  {session.messageCount} messages
-                </p>
-              </div>
-              {idx < sessions.length - 1 && <Separator className="my-1" />}
-            </React.Fragment>
-          ))}
-          {sessions.length === 0 && (
-            <p className="p-4 text-center text-sm text-gray-500">
-              No sessions found for this user.
-            </p>
-          )}
-        </ScrollArea>
       </Card>
 
       {/* Main: Chat Detail */}
-      <Card className="flex flex-1 flex-col">
+      <Card className="flex h-full min-h-0 flex-1 flex-col">
         <div className="flex items-center justify-between border-b p-4">
           <div>
             <h3 className="text-lg font-medium">
@@ -99,7 +100,7 @@ export default function AdminChatUsersDetailPage() {
           </div>
         </div>
 
-        <ScrollArea className="flex-1 p-4">
+        <ScrollArea className="h-full min-h-0 flex-1 p-4">
           {messagesLoading ? (
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
@@ -116,10 +117,7 @@ export default function AdminChatUsersDetailPage() {
                 >
                   {!msg.isOwn && (
                     <Avatar className="h-8 w-8">
-                      <AvatarImage
-                        src={msg.avatar || "/placeholder.svg"}
-                        alt={msg.senderName}
-                      />
+                      <AvatarImage src={msg.avatar} alt={msg.senderName} />
                       <AvatarFallback>
                         {msg.senderName?.charAt(0)}
                       </AvatarFallback>

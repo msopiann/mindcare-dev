@@ -1,16 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 
 interface ChatSession {
   id: string;
-  topic: string;
-  lastMessage: string;
-  messageCount: number;
+  title: string;
   createdAt: string;
   updatedAt: string;
+  messageCount: number;
+  lastMessage: string | null;
+  lastMessageTime: string | null;
 }
 
-interface Message {
+interface ChatMessage {
   id: string;
   content: string;
   isFromUser: boolean;
@@ -18,51 +18,46 @@ interface Message {
   createdAt: string;
 }
 
-interface CreateSessionInput {
-  topic?: string;
-}
-
-interface SendMessageInput {
-  content: string;
-}
-
-// Chat Sessions
+// Fetch all chat sessions
 export function useChatSessions() {
-  return useQuery({
+  return useQuery<{ sessions: ChatSession[] }>({
     queryKey: ["chat-sessions"],
-    queryFn: async (): Promise<ChatSession[]> => {
+    queryFn: async () => {
       const response = await fetch("/api/chat/sessions");
-      if (!response.ok) throw new Error("Failed to fetch sessions");
-      const data = await response.json();
-      return data.sessions;
+      if (!response.ok) {
+        throw new Error("Failed to fetch chat sessions");
+      }
+      return response.json();
     },
   });
 }
 
+// Create new chat session
 export function useCreateChatSession() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (input: CreateSessionInput): Promise<ChatSession> => {
+    mutationFn: async (data: { title?: string }) => {
       const response = await fetch("/api/chat/sessions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(input),
+        body: JSON.stringify(data),
       });
-      if (!response.ok) throw new Error("Failed to create session");
-      const data = await response.json();
-      return data.session;
+
+      if (!response.ok) {
+        throw new Error("Failed to create chat session");
+      }
+
+      const result = await response.json();
+      return result.session;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["chat-sessions"] });
-      toast.success("New chat session created");
-    },
-    onError: () => {
-      toast.error("Failed to create chat session");
     },
   });
 }
 
+// Delete chat session
 export function useDeleteChatSession() {
   const queryClient = useQueryClient();
 
@@ -71,58 +66,64 @@ export function useDeleteChatSession() {
       const response = await fetch(`/api/chat/sessions/${sessionId}`, {
         method: "DELETE",
       });
-      if (!response.ok) throw new Error("Failed to delete session");
+
+      if (!response.ok) {
+        throw new Error("Failed to delete chat session");
+      }
+
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["chat-sessions"] });
-      toast.success("Chat session deleted");
-    },
-    onError: () => {
-      toast.error("Failed to delete chat session");
     },
   });
 }
 
-// Messages
+// Fetch messages for a specific session
 export function useChatMessages(sessionId: string | null) {
-  return useQuery({
+  return useQuery<ChatMessage[]>({
     queryKey: ["chat-messages", sessionId],
-    queryFn: async (): Promise<Message[]> => {
+    queryFn: async () => {
       if (!sessionId) return [];
+
       const response = await fetch(`/api/chat/sessions/${sessionId}/messages`);
-      if (!response.ok) throw new Error("Failed to fetch messages");
+      if (!response.ok) {
+        throw new Error("Failed to fetch messages");
+      }
+
       const data = await response.json();
-      return data.messages;
+      return data.messages || [];
     },
     enabled: !!sessionId,
   });
 }
 
+// Send message
 export function useSendMessage() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({
-      sessionId,
-      content,
-    }: {
-      sessionId: string;
-      content: string;
-    }) => {
-      const response = await fetch(`/api/chat/sessions/${sessionId}/messages`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content }),
-      });
-      if (!response.ok) throw new Error("Failed to send message");
+    mutationFn: async (data: { sessionId: string; content: string }) => {
+      const response = await fetch(
+        `/api/chat/sessions/${data.sessionId}/messages`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ content: data.content }),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to send message");
+      }
+
       return response.json();
     },
-    onSuccess: (_, { sessionId }) => {
-      queryClient.invalidateQueries({ queryKey: ["chat-messages", sessionId] });
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["chat-messages", variables.sessionId],
+      });
       queryClient.invalidateQueries({ queryKey: ["chat-sessions"] });
-    },
-    onError: () => {
-      toast.error("Failed to send message");
     },
   });
 }

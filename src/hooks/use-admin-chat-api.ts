@@ -38,10 +38,24 @@ interface SystemPrompt {
   updatedAt: string;
 }
 
-interface KeywordStat {
-  label: string;
-  percentage: number;
+interface KeywordData {
+  keyword: string;
   count: number;
+  percentage: number;
+  trend: "up" | "down" | "stable";
+}
+
+interface PopularKeywordsResponse {
+  keywords: KeywordData[];
+  summary: {
+    totalMessages: number;
+    uniqueKeywords: number;
+    avgKeywordsPerMessage: number;
+    dateRange: {
+      start: string;
+      end: string;
+    };
+  };
 }
 
 // User Stats
@@ -93,15 +107,20 @@ export function useAdminSessionMessages(
 }
 
 // Popular Keywords
-export function usePopularKeywords() {
-  return useQuery({
-    queryKey: ["popular-keywords"],
-    queryFn: async (): Promise<KeywordStat[]> => {
-      const response = await fetch("/api/admin/chat/popular-keywords");
-      if (!response.ok) throw new Error("Failed to fetch popular keywords");
-      const data = await response.json();
-      return data.keywords;
+export function usePopularKeywords(days = 30, limit = 50) {
+  return useQuery<PopularKeywordsResponse>({
+    queryKey: ["popular-keywords", days, limit],
+    queryFn: async () => {
+      const response = await fetch(
+        `/api/admin/chat/popular-keywords?days=${days}&limit=${limit}`,
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch popular keywords");
+      }
+      return response.json();
     },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: false,
   });
 }
 

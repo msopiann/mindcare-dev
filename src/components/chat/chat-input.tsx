@@ -41,7 +41,7 @@ export default function ChatInput({
           onChange={(e) => setValue(e.target.value)}
           placeholder={disabled ? "Sending..." : "Message Mindcare..."}
           disabled={disabled}
-          className="flex-1 resize-none border-none bg-transparent px-2 py-1 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+          className="!min-h-0 flex-1 resize-none border-none bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
           rows={1}
         />
 

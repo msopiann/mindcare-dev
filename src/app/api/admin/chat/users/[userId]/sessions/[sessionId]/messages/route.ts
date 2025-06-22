@@ -5,9 +5,11 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { userId: string; sessionId: string } },
+  { params }: { params: Promise<{ userId: string; sessionId: string }> },
 ) {
   try {
+    const { userId, sessionId } = await params;
+
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id || session.user.role !== "ADMIN") {
@@ -16,8 +18,8 @@ export async function GET(
 
     const chatSession = await prisma.chatSession.findFirst({
       where: {
-        id: params.sessionId,
-        userId: params.userId,
+        id: sessionId,
+        userId,
       },
     });
 
@@ -26,7 +28,7 @@ export async function GET(
     }
 
     const messages = await prisma.message.findMany({
-      where: { sessionId: params.sessionId },
+      where: { sessionId },
       orderBy: { createdAt: "asc" },
     });
 

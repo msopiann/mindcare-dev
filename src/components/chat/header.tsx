@@ -1,47 +1,84 @@
 "use client";
-
-import Image from "next/image";
-import { ChevronDown, Menu, Settings } from "lucide-react";
+import { ChevronDown, Settings, MessageSquare } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import ChatThemeToggle from "./custom-theme-toggle";
+import { signOut } from "next-auth/react";
 
-const ChatHeader = () => {
+interface ChatHeaderProps {
+  user?: {
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+  };
+  currentSessionTitle?: string;
+  onSettings?: () => void;
+}
+
+const ChatHeader = ({
+  user,
+  currentSessionTitle,
+  onSettings,
+}: ChatHeaderProps) => {
+  const handleSignOut = () => {
+    signOut({ callbackUrl: "/" });
+  };
+
   return (
-    <header className="bg-background flex items-center justify-between border-b px-4 py-2">
-      {/* Brand / context selector */}
-      <div className="flex items-center space-x-2">
-        <button
-          aria-label="Select chat context"
-          className="flex items-center rounded text-lg font-medium hover:text-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:hover:text-gray-300"
-        >
-          Chat Mind
-          <ChevronDown className="ml-1 h-4 w-4" />
-        </button>
+    <header className="bg-background flex items-center justify-between border-b px-4 py-3">
+      {/* Current chat info */}
+      <div className="flex items-center space-x-3">
+        <div className="flex items-center gap-2">
+          <MessageSquare className="h-5 w-5 text-blue-500" />
+          <span className="text-lg font-medium">
+            {currentSessionTitle || "Select a chat"}
+          </span>
+        </div>
       </div>
 
-      {/* Dark mode toggle */}
+      {/* Center */}
       <ChatThemeToggle />
-      {/* Controls */}
-      <div className="flex items-center space-x-4">
-        {/* Menu / Settings / Avatar */}
-        <button
-          aria-label="Open menu"
-          className="rounded p-2 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:hover:bg-gray-700"
-        >
-          <Menu className="h-5 w-5" />
-        </button>
-        <button
-          aria-label="Settings"
-          className="rounded p-2 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:hover:bg-gray-700"
-        >
-          <Settings className="h-5 w-5" />
-        </button>
-        <Image
-          src="/assets/image/chat/avatar-user.png"
-          alt="User avatar"
-          width={32}
-          height={32}
-          className="rounded-full"
-        />
+
+      {/* Right side controls */}
+      <div className="flex items-center space-x-3">
+        {/* User menu */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="flex h-10 items-center gap-2">
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={user?.image} alt="User avatar" />
+                <AvatarFallback>{user?.name?.charAt(0) || "U"}</AvatarFallback>
+              </Avatar>
+              <div className="hidden text-left sm:block">
+                <p className="text-sm font-medium">{user?.name || "User"}</p>
+                <p className="text-xs text-gray-500">{user?.email || ""}</p>
+              </div>
+              <ChevronDown className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <div className="px-2 py-1.5">
+              <p className="text-sm font-medium">{user?.name || "User"}</p>
+              <p className="text-xs text-gray-500">{user?.email || ""}</p>
+            </div>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={onSettings}>
+              <Settings className="mr-2 h-4 w-4" />
+              Settings
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleSignOut} className="text-red-600">
+              Sign out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );

@@ -38,9 +38,6 @@ export default function AdminDashboardChatUserStats() {
                 Messages
               </th>
               <th className="px-4 py-2 text-right text-sm font-medium">
-                Last Activity
-              </th>
-              <th className="px-4 py-2 text-right text-sm font-medium">
                 Actions
               </th>
             </tr>
@@ -52,16 +49,9 @@ export default function AdminDashboardChatUserStats() {
                 <td className="px-4 py-2">{user.email}</td>
                 <td className="px-4 py-2 text-right">{user.sessionCount}</td>
                 <td className="px-4 py-2 text-right">{user.totalMessages}</td>
-                <td className="px-4 py-2 text-right text-sm text-gray-500">
-                  {user.lastActivity
-                    ? formatDistanceToNow(new Date(user.lastActivity), {
-                        addSuffix: true,
-                      })
-                    : "Never"}
-                </td>
                 <td className="px-4 py-2 text-center">
                   <Link
-                    href={`/admin/dashboard/chat/users/${user.id}`}
+                    href={`/dashboard/chat/users/${user.id}`}
                     className="text-blue-500 underline hover:text-blue-700"
                   >
                     View Details

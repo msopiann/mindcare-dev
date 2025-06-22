@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import type { Message as ChatMessage } from "@/components/chat/message-list";
-import Sidebar, { type ChatItem } from "@/components/chat/sidebar";
+import Sidebar from "@/components/chat/sidebar";
 import ChatWindow from "@/components/chat/chat-window";
 import Header from "@/components/chat/header";
 import {
@@ -12,6 +12,7 @@ import {
   useCreateChatSession,
   useChatMessages,
   useSendMessage,
+  useDeleteChatSession,
 } from "@/hooks/use-chat-api";
 import { toast } from "sonner";
 
@@ -22,11 +23,14 @@ export default function ChatPage() {
     null,
   );
 
-  const { data: sessions = [], isLoading: sessionsLoading } = useChatSessions();
+  const { data: sessionsData, isLoading: sessionsLoading } = useChatSessions();
+  const sessions = sessionsData?.sessions || [];
+
   const { data: messages = [], isLoading: messagesLoading } =
     useChatMessages(selectedSessionId);
   const createSession = useCreateChatSession();
   const sendMessage = useSendMessage();
+  const deleteSession = useDeleteChatSession();
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -35,20 +39,12 @@ export default function ChatPage() {
     }
   }, [status, router]);
 
-  // Auto-select first session or create new one
+  // Auto-select first session
   useEffect(() => {
     if (!sessionsLoading && sessions.length > 0 && !selectedSessionId) {
       setSelectedSessionId(sessions[0].id);
     }
   }, [sessions, sessionsLoading, selectedSessionId]);
-
-  const chats: ChatItem[] = [
-    {
-      id: "mindcare",
-      name: "Mindcare",
-      avatarUrl: "/assets/image/chat/avatar-bot.png",
-    },
-  ];
 
   const chatMessages: ChatMessage[] = messages.map((msg) => ({
     id: msg.id,
@@ -88,10 +84,39 @@ export default function ChatPage() {
     try {
       const newSession = await createSession.mutateAsync({});
       setSelectedSessionId(newSession.id);
+      toast.success("New chat created!");
     } catch (error) {
       toast.error("Failed to create new chat");
     }
   };
+
+  const handleDeleteSession = async (sessionId: string) => {
+    if (
+      !confirm(
+        "Are you sure you want to delete this chat? This action cannot be undone.",
+      )
+    ) {
+      return;
+    }
+
+    try {
+      await deleteSession.mutateAsync(sessionId);
+
+      // If deleted session was selected, select another one
+      if (selectedSessionId === sessionId) {
+        const remainingSessions = sessions.filter((s) => s.id !== sessionId);
+        setSelectedSessionId(
+          remainingSessions.length > 0 ? remainingSessions[0].id : null,
+        );
+      }
+
+      toast.success("Chat deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete chat");
+    }
+  };
+
+  const currentSession = sessions.find((s) => s.id === selectedSessionId);
 
   if (status === "loading" || sessionsLoading) {
     return (
@@ -111,14 +136,21 @@ export default function ChatPage() {
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar
-        chats={chats}
-        selectedChatId="mindcare"
-        onSelectChat={() => {}}
+        sessions={sessions}
+        selectedSessionId={selectedSessionId}
+        onSelectSession={setSelectedSessionId}
         onNewChat={handleNewChat}
+        onDeleteSession={handleDeleteSession}
         onSettings={() => router.push("/dashboard/settings")}
+        user={session?.user}
+        isLoading={sessionsLoading}
       />
       <div className="flex flex-1 flex-col">
-        <Header />
+        <Header
+          user={session?.user}
+          currentSessionTitle={currentSession?.title}
+          onSettings={() => router.push("/dashboard/settings")}
+        />
         <ChatWindow
           messages={chatMessages}
           onSendMessage={handleSend}

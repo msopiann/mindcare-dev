@@ -133,10 +133,7 @@ export default function DashboardSettingsPage() {
       {/* Header */}
       <div className="flex items-center space-x-4">
         <Avatar className="h-16 w-16">
-          <AvatarImage
-            src={userProfile?.avatar || "/placeholder.svg"}
-            alt="User avatar"
-          />
+          <AvatarImage src={userProfile?.avatar} alt="User avatar" />
           <AvatarFallback className="text-lg">
             {getAvatarFallback()}
           </AvatarFallback>
