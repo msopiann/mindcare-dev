@@ -33,7 +33,7 @@ export async function GET() {
 
     const formattedSessions = chatSessions.map((chatSession) => ({
       id: chatSession.id,
-      title: chatSession.title || `Chat ${chatSession.id.slice(-6)}`,
+      title: `Chat ${chatSession.id.slice(-6)}`,
       createdAt: chatSession.createdAt.toISOString(),
       updatedAt: chatSession.updatedAt.toISOString(),
       messageCount: chatSession._count.messages,
