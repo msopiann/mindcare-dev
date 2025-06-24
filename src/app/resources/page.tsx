@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { SiteHeader } from "@/components/site-header";
 import { ResourcesBannerCarousel } from "@/components/resources/banner-carousel";
 import { SiteFooter } from "@/components/site-footer";
-import { ThemeToggle } from "@/components/theme-toggle";
 import TailwindIndicator from "@/components/tailwind-indicator";
 import { ResourcesSection } from "@/components/resources/resources-section";
 
@@ -112,9 +111,6 @@ export default function ResourcesPage() {
       </main>
 
       <SiteFooter />
-      <div className="fixed right-5 bottom-5">
-        <ThemeToggle />
-      </div>
       <TailwindIndicator />
     </div>
   );

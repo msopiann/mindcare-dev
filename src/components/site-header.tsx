@@ -19,7 +19,7 @@ interface SiteHeaderProps {
 // Navigation data
 const leftNavItems: NavItem[] = [
   { label: "Home", href: "/", ariaLabel: "Go to homepage" },
-  { label: "About", href: "/about", ariaLabel: "Learn about Mindcare" },
+  { label: "About", href: "#", ariaLabel: "Learn about Mindcare" },
   { label: "Chat bot", href: "/chat", ariaLabel: "Start AI wellness chat" },
 ];
 

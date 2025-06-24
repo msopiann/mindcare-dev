@@ -32,7 +32,7 @@ const ChatHeader = ({
   };
 
   return (
-    <header className="bg-background flex items-center justify-between border-b px-4 py-3">
+    <header className="bg-background flex items-center justify-between border-b px-4 py-1.5">
       {/* Current chat info */}
       <div className="flex items-center space-x-3">
         <div className="flex items-center gap-2">

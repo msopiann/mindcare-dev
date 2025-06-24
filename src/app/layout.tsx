@@ -4,7 +4,6 @@ import { Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Providers } from "@/components/providers";
-import { ThemeToggle } from "@/components/theme-toggle";
 
 const bricolageGrotesqueFont = Bricolage_Grotesque({
   variable: "--font-bricolage",
@@ -69,12 +68,11 @@ export default function RootLayout({
         <Providers>
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
+            defaultTheme="light"
             enableSystem
             disableTransitionOnChange
           >
             {children}
-            <ThemeToggle />
           </ThemeProvider>
         </Providers>
       </body>

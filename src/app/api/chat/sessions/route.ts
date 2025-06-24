@@ -11,17 +11,11 @@ const createSessionSchema = z.object({
 // GET - Fetch all chat sessions for the user
 export async function GET() {
   try {
-    console.log("GET /api/chat/sessions - Starting request");
-
     const session = await getServerSession(authOptions);
-    console.log("Session:", session?.user?.id ? "Found" : "Not found");
 
     if (!session?.user?.id) {
-      console.log("Unauthorized - no session");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
-    console.log("Fetching chat sessions for user:", session.user.id);
 
     const chatSessions = await prisma.chatSession.findMany({
       where: { userId: session.user.id },
@@ -37,8 +31,6 @@ export async function GET() {
       orderBy: { updatedAt: "desc" },
     });
 
-    console.log("Found chat sessions:", chatSessions.length);
-
     const formattedSessions = chatSessions.map((chatSession) => ({
       id: chatSession.id,
       title: chatSession.title || `Chat ${chatSession.id.slice(-6)}`,
@@ -51,7 +43,6 @@ export async function GET() {
 
     return NextResponse.json({ sessions: formattedSessions });
   } catch (error) {
-    console.error("Error in GET /api/chat/sessions:", error);
     return NextResponse.json(
       {
         error: "Internal server error",
@@ -65,36 +56,26 @@ export async function GET() {
 // POST - Create a new chat session
 export async function POST(request: NextRequest) {
   try {
-    console.log("POST /api/chat/sessions - Starting request");
-
     const session = await getServerSession(authOptions);
-    console.log("Session:", session?.user?.id ? "Found" : "Not found");
 
     if (!session?.user?.id) {
-      console.log("Unauthorized - no session");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     let body = {};
     try {
       body = await request.json();
-      console.log("Request body:", body);
     } catch (e) {
       console.log("No body or invalid JSON, using empty object");
     }
 
     const validatedData = createSessionSchema.parse(body);
-    console.log("Validated data:", validatedData);
 
-    // Count existing sessions to generate title
-    console.log("Counting existing sessions...");
     const sessionCount = await prisma.chatSession.count({
       where: { userId: session.user.id },
     });
-    console.log("Existing session count:", sessionCount);
 
     const title = validatedData.title || `Chat ${sessionCount + 1}`;
-    console.log("Creating session with title:", title);
 
     // Check if title field exists in schema
     const chatSession = await prisma.chatSession.create({
@@ -104,8 +85,6 @@ export async function POST(request: NextRequest) {
         ...(validatedData.title && { title }),
       },
     });
-
-    console.log("Created chat session:", chatSession.id);
 
     return NextResponse.json({
       session: {

@@ -8,7 +8,6 @@ import { SiteHeader } from "@/components/site-header";
 import TailwindIndicator from "@/components/tailwind-indicator";
 import { TestimonialsSection } from "@/components/sections/testimonials-section";
 import { ThemeProvider } from "@/components/theme-provider";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { WellbeingPathSection } from "@/components/sections/wellbeing-path-section";
 
 const baseUrl = process.env.APP_URL!;
@@ -77,11 +76,6 @@ export default function HomePage() {
           <FAQSection />
         </main>
         <SiteFooter />
-
-        {/* Fixed Theme Toggle Button */}
-        <div className="fixed right-5 bottom-5">
-          <ThemeToggle />
-        </div>
         <TailwindIndicator />
       </div>
     </ThemeProvider>

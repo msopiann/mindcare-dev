@@ -2,7 +2,6 @@ import { Metadata } from "next";
 import { EventBannerCarousel } from "@/components/events/banner-carousel";
 import { EventCardsSection } from "@/components/events/cards-section";
 import { RecommendationsSection } from "@/components/events/recommendations";
-import { ThemeToggle } from "@/components/theme-toggle";
 import TailwindIndicator from "@/components/tailwind-indicator";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -82,9 +81,6 @@ export default function EventsPage() {
         <RecommendationsSection aria-labelledby="you-might-like" />
       </main>
       <SiteFooter />
-      <div className="fixed right-5 bottom-5">
-        <ThemeToggle />
-      </div>
       <TailwindIndicator />
     </div>
   );

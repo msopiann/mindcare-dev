@@ -12,7 +12,7 @@ const FOOTER_LINKS = {
   main: [
     {
       label: "About",
-      href: "/about",
+      href: "#",
       ariaLabel: "Learn about Mindcare's mission",
     },
     {

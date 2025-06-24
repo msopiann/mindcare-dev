@@ -16,46 +16,74 @@ interface TestimonialsSectionProps {
 
 const TESTIMONIALS: Testimonial[] = [
   {
-    id: 1,
-    name: "Sarah Johnson",
-    content:
-      "Mindcare has completely transformed my approach to mental health. The AI chat feature is incredibly helpful for daily check-ins, and the meditation sessions have become an essential part of my routine.",
-    age: 35,
-  },
-  {
-    id: 2,
-    name: "Michael Chen",
-    content:
-      "As someone who struggles with anxiety, finding the right support was crucial. The one-on-one therapy sessions through Mindcare have been life-changing. Highly recommend!",
-    age: 25,
-  },
-  {
-    id: 3,
-    name: "Emily Rodriguez",
-    content:
-      "The mindfulness exercises and guided meditations have helped me manage stress so much better. The platform is user-friendly and the content is top-notch.",
-    age: 25,
-  },
-  {
-    id: 4,
-    name: "David Thompson",
-    content:
-      "I was skeptical about online mental health support, but Mindcare exceeded my expectations. The AI assistant is surprisingly insightful and the human therapists are excellent.",
-    age: 25,
-  },
-  {
     id: 5,
-    name: "Lisa Park",
+    name: "Dr. Rina Wijaya",
     content:
-      "Working in healthcare, I needed reliable mental health support. Mindcare's 24/7 availability and professional guidance have been invaluable for my well-being.",
-    age: 25,
+      "Kampus adalah tempat yang menantang, dan stres tidak bisa dihindari. Mendorong mahasiswa untuk terbuka tentang kesehatan mental adalah bagian dari membentuk generasi yang tangguh.",
+    age: 39,
   },
   {
     id: 6,
-    name: "James Wilson",
+    name: "Psikolog Budi Hartanto",
     content:
-      "The combination of AI support and human expertise is perfect. I can get immediate help when needed and schedule deeper sessions with therapists. Game-changer!",
-    age: 35,
+      "Kesehatan mental bukan lagi topik yang tabu. Mahasiswa perlu tahu bahwa meminta bantuan bukanlah tanda kelemahan, tetapi bentuk keberanian.",
+    age: 44,
+  },
+  {
+    id: 7,
+    name: "Dr. Silvia Lestari",
+    content:
+      "Saya sering menyarankan mahasiswa untuk menjaga keseimbangan antara kuliah dan kehidupan pribadi. Kesehatan mental yang baik akan mendukung semua aspek kehidupan.",
+    age: 41,
+  },
+  {
+    id: 8,
+    name: "Prof. Daniel Santoso",
+    content:
+      "Ketika mahasiswa merasa didengar dan didukung secara emosional, mereka cenderung lebih fokus, lebih kreatif, dan lebih tahan terhadap tekanan akademik.",
+    age: 53,
+  },
+  {
+    id: 9,
+    name: "Dr. Nila Aryani",
+    content:
+      "Penting untuk menyediakan ruang aman di kampus di mana mahasiswa bisa berbicara tanpa rasa takut dihakimi. Ini adalah fondasi dari kesehatan mental yang kuat.",
+    age: 37,
+  },
+  {
+    id: 10,
+    name: "Konselor Arief Saputra",
+    content:
+      "Intervensi dini bisa mencegah banyak masalah jangka panjang. Jangan tunggu sampai terlalu berat untuk mencari bantuan.",
+    age: 45,
+  },
+  {
+    id: 11,
+    name: "Dr. Sari Ramadhani",
+    content:
+      "Saya selalu menekankan bahwa kesehatan mental sama pentingnya dengan kesehatan fisik. Kita perlu memperlakukan keduanya dengan perhatian yang setara.",
+    age: 40,
+  },
+  {
+    id: 12,
+    name: "Prof. Johan Kurniawan",
+    content:
+      "Fakultas dan staf kampus harus dilatih untuk lebih peka terhadap tanda-tanda gangguan mental pada mahasiswa. Ini adalah tanggung jawab bersama.",
+    age: 55,
+  },
+  {
+    id: 13,
+    name: "Psikolog Riska Amalia",
+    content:
+      "Platform digital bisa jadi jembatan awal bagi mahasiswa yang masih ragu untuk bertemu langsung dengan psikolog. Ini langkah positif dalam normalisasi konsultasi mental.",
+    age: 36,
+  },
+  {
+    id: 14,
+    name: "Dr. Irwan Subekti",
+    content:
+      "Mental health bukan hanya soal 'tidak stres'. Ini tentang mengenali emosi, mengelola tekanan, dan membangun daya tahan diri terhadap tantangan hidup.",
+    age: 43,
   },
 ];
 
